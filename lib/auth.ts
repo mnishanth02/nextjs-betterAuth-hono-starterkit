@@ -5,12 +5,14 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 
 export const auth = betterAuth({
-  adapter: drizzleAdapter(db, {
+  database: drizzleAdapter(db, {
     provider: "pg",
     schema,
+    usePlural: true,
   }),
   secret: env.BETTER_AUTH_SECRET,
   baseUrl: env.BETTER_AUTH_URL,
+
   emailAndPassword: {
     enabled: true,
     async sendResetPassword(data, request) {

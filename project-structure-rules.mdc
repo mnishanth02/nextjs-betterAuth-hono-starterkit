@@ -1,6 +1,6 @@
 ---
-description: project structure when files need to be created/updated
-globs:
+description: 
+globs: 
 alwaysApply: false
 ---
 ## General Principles
@@ -86,5 +86,3 @@ alwaysApply: false
 8.  **Hooks:** Create custom hooks in `hooks/` if needed for complex client-side logic.
 9.  **Constants/Config:** Add relevant constants or configuration to `lib/config/`.
 10. **Routes:** Add new path constants to `lib/routes.ts`.
-
----
