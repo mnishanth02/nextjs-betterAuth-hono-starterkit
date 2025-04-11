@@ -1,0 +1,27 @@
+import { env } from "@/env/server-env";
+import { db } from "@/server/db";
+import * as schema from "@/server/db/schema";
+import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+
+export const auth = betterAuth({
+  adapter: drizzleAdapter(db, {
+    provider: "pg",
+    schema,
+  }),
+  secret: env.BETTER_AUTH_SECRET,
+  baseUrl: env.BETTER_AUTH_URL,
+  emailAndPassword: {
+    enabled: true,
+    async sendResetPassword(data, request) {
+      console.log("sendResetPassword", data, request);
+      // Send an email to the user with a link to reset their password
+    },
+  },
+  socialProviders: {
+    google: {
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+    },
+  },
+});

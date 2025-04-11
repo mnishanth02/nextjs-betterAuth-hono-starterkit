@@ -1,1 +1,1 @@
-export { users, accounts } from "./auth";
+export * from "./auth.schema";

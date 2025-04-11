@@ -63,6 +63,29 @@
   }
 }
 
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
@@ -136,7 +159,198 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    list-style: none;
   }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px;
+    height: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Form Elements */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  /* Focus States */
+  :focus {
+    outline: none;
+  }
+
+  /* Selection */
+  ::selection {
+    @apply bg-primary/20 text-foreground;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    @apply h-1 w-[6px] bg-primary/20;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-primary/60 transition-colors hover:bg-primary/80;
+  }
+}
+
+/* Utility Classes */
+@layer utilities {
+  /* Typography */
+  .h1 {
+    @apply text-6xl font-medium tracking-[-2px] lg:text-[72px] lg:leading-[80px];
+  }
+  .h2 {
+    @apply text-4xl font-bold leading-tight;
+  }
+  .h3 {
+    @apply text-3xl font-bold leading-snug;
+  }
+  .h4 {
+    @apply text-[22px] font-semibold leading-normal;
+  }
+  .subtitle {
+    @apply mb-8 text-lg font-light leading-relaxed;
+  }
+  .article-text {
+    @apply mb-8 text-xl leading-relaxed;
+  }
+
+  /* Layout */
+  .wrapper {
+    @apply mx-auto w-full max-w-7xl p-5 md:px-10 xl:px-0;
+  }
+  .container-sm {
+    @apply mx-auto w-full max-w-3xl p-5 md:px-10 xl:px-0;
+  }
+  .container-md {
+    @apply mx-auto w-full max-w-5xl p-5 md:px-10 xl:px-0;
+  }
+
+  /* Flexbox */
+  .flex-center {
+    @apply flex items-center justify-center;
+  }
+  .flex-start {
+    @apply flex items-center justify-start;
+  }
+  .flex-between {
+    @apply flex items-center justify-between;
+  }
+
+  /* Grid */
+  .grid-auto-fit {
+    @apply grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-6;
+  }
+  .grid-auto-fill {
+    @apply grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-6;
+  }
+
+  /* Interactive States */
+  .interactive-base {
+    @apply duration-[var(--transition-normal)] transition-colors;
+  }
+  .hover-base {
+    @apply hover:bg-[color:var(--hover-overlay)];
+  }
+  .active-base {
+    @apply active:bg-[color:var(--active-overlay)];
+  }
+  .disabled-base {
+    @apply disabled:pointer-events-none disabled:opacity-[var(--disabled-opacity)];
+  }
+  .focus-base {
+    @apply focus-visible:ring-2 focus-visible:ring-[color:var(--focus-visible-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--background)];
+  }
+
+  /* Text Utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  /* App Name Styling */
+  .app-name {
+    @apply text-sm font-semibold tracking-tight transition-all duration-300;
+    @apply sm:text-base md:text-lg lg:text-xl lg:font-bold;
+    @apply hover:scale-[1.02];
+    background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 50%, var(--primary) 100%);
+    background-size: 200% auto;
+    animation: gradient-shift 5s ease infinite;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+  }
+
+  .app-name::after {
+    content: "";
+    @apply absolute bottom-0 left-0 w-0 h-[2px] transition-all duration-500;
+    background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 50%, var(--primary) 100%);
+    background-size: 200% auto;
+    opacity: 0.7;
+  }
+
+  .app-name:hover::after {
+    @apply w-full;
+    animation: gradient-shift 3s ease infinite;
+  }
+
+  /* Links */
+  .link-subtle {
+    @apply text-foreground/80 transition-colors hover:text-foreground;
+  }
+  .link-underline {
+    @apply underline decoration-[0.1em] underline-offset-4 transition-all hover:decoration-[0.15em];
+  }
+  .hover-underline {
+    @apply relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-current after:transition-all after:duration-300 hover:after:w-full;
+  }
+
+  /* Effects */
+  .glass-effect {
+    @apply border border-white/20 bg-white/10 backdrop-blur-md;
+  }
+  .interactive-shadow {
+    @apply transition-shadow duration-300 hover:shadow-lg;
+  }
+}
+
+/* Background Patterns */
+.bg-grid-pattern {
+  background-image: linear-gradient(to right, var(--border) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Animation Classes */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out forwards;
+}
+
+/* Third-party Component Styles */
+.swiper-horizontal > .section-pagination-bullets .swiper-pagination-bullet,
+.swiper-pagination-horizontal.swiper-pagination-bullets .swiper-pagination-bullet {
+  @apply bg-primary;
 }

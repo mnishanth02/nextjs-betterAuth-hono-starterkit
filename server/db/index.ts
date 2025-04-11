@@ -7,4 +7,4 @@ const sql = neon(env.DATABASE_URL);
 
 const db = drizzle({ client: sql, schema });
 
-export default db;
+export { db };
