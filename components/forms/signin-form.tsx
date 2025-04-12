@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function SignInForm() {
   const [email, setEmail] = useState("");
@@ -78,7 +79,15 @@ export default function SignInForm() {
                 {
                   email,
                   password,
+                  callbackURL: "/admin",
+                  rememberMe,
+                  fetchOptions: {
+                    onError: (ctx) => {
+                      toast.error(ctx.error.message);
+                    },
+                  },
                 },
+
                 {
                   onRequest: (_) => {
                     setLoading(true);
