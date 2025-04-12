@@ -21,7 +21,7 @@ export async function middleware(request: NextRequest) {
 
   // Redirect authenticated users away from auth pages
   if (isPublicPath && session) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/admin", request.url));
   }
 
   // Redirect unauthenticated users to login

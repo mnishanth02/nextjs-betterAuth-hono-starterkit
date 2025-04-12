@@ -4,8 +4,8 @@ import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { prettyJSON } from "hono/pretty-json";
 import { handle } from "hono/vercel";
-import { protect } from "./middleware";
 import { errorHandler } from "./middleware/error.middleware";
+import userRouter from "./routes/user.routes";
 
 const API_BASE = process.env.API_BASE || "/api/v1";
 
@@ -16,29 +16,21 @@ const app = new Hono<{ Bindings: Env; Variables: Variables }>().basePath(API_BAS
 app.use("*", logger());
 app.use("*", prettyJSON());
 
-// CORS configuration (tightened for security)
+// CORS configuration
 app.use(
   "*",
   cors({
-    origin: ["http://localhost:3000", "http://localhost:8000"], // Specify allowed origins (update for production)
+    origin: ["http://localhost:3000", "http://localhost:8000"],
     credentials: true,
-    maxAge: 86400, // Cache preflight for 1 day
+    maxAge: 86400,
   })
 );
 
 // Health check
 app.get("/health", (c) => c.json({ status: "ok" }));
 
-// Better-Auth - Handle all auth routes
-// app.all("/auth/*", async (c) => {
-//     return await auth.handler(c.req.raw);
-// });
-
-// Protected user routes
-app.get("/user/me", protect, async (c) => {
-  const user = c.get("user");
-  return c.json({ user });
-});
+// Mount routers
+app.route("/user", userRouter);
 
 // Error Handler
 app.onError(errorHandler);
