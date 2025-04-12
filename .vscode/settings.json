@@ -1,0 +1,12 @@
+{
+  "workbench.editor.customLabels.patterns": {
+    "**/app/**/page.tsx": "${dirname} - page.tsx",
+    "**/app/**/layout.tsx": "${dirname} - layout.tsx"
+  },
+
+  "editor.defaultFormatter": "biomejs.biome",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.biome": "explicit"
+  }
+}

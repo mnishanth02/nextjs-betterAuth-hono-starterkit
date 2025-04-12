@@ -13,7 +13,8 @@
       "**/coverage",
       "**/.husky",
       "**/.vscode",
-      "**/drizzle/migrations"
+      "**/drizzle/migrations",
+      "**/bun.lockb"
     ]
   },
   "formatter": {
@@ -58,21 +59,17 @@
       "complexity": {
         "noBannedTypes": "off",
         "noUselessTypeConstraint": "error",
-        "noExcessiveCognitiveComplexity": "warn"
+        "noExcessiveCognitiveComplexity": "warn",
+        "noStaticOnlyClass": "off",
+        "useLiteralKeys": "off"
       },
       "correctness": {
         "noChildrenProp": "error",
-        "noConstAssign": "off",
-        "noGlobalObjectCalls": "off",
-        "noInvalidBuiltinInstantiation": "off",
-        "noInvalidConstructorSuper": "off",
-        "noNewSymbol": "off",
-        "noSetterReturn": "off",
-        "noUndeclaredVariables": "off",
-        "noUnreachable": "off",
-        "noUnreachableSuper": "off",
+        "noConstAssign": "error",
+        "noGlobalObjectCalls": "error",
+        "noInvalidConstructorSuper": "error",
+        "noUnreachable": "error",
         "noUnusedVariables": "error",
-        "useArrayLiterals": "off",
         "useExhaustiveDependencies": "warn",
         "useHookAtTopLevel": "error",
         "useJsxKeyInIterable": "error",
@@ -92,7 +89,7 @@
         "noAccumulatingSpread": "warn"
       },
       "security": {
-        "noDangerouslySetInnerHtml": "off",
+        "noDangerouslySetInnerHtml": "warn",
         "noDangerouslySetInnerHtmlWithChildren": "error"
       },
       "style": {
@@ -108,24 +105,15 @@
         "useTemplate": "warn"
       },
       "suspicious": {
-        "noArrayIndexKey": "off",
-        "noAssignInExpressions": "off",
-        "noClassAssign": "off",
+        "noArrayIndexKey": "warn",
+        "noAssignInExpressions": "warn",
         "noCommentText": "error",
-        "noDuplicateClassMembers": "off",
         "noDuplicateJsxProps": "error",
-        "noDuplicateObjectKeys": "off",
-        "noDuplicateParameters": "off",
         "noExplicitAny": "error",
         "noExtraNonNullAssertion": "error",
-        "noFunctionAssign": "off",
-        "noImportAssign": "off",
         "noMisleadingInstantiator": "error",
-        "noRedeclare": "off",
         "noUnsafeDeclarationMerging": "error",
-        "noUnsafeNegation": "off",
-        "useGetterReturn": "off",
-        "useNamespaceKeyword": "error"
+        "useGetterReturn": "error"
       }
     },
     "ignore": [
@@ -147,119 +135,7 @@
       "quoteStyle": "double",
       "trailingCommas": "es5",
       "semicolons": "always"
-    },
-    "globals": [
-      "ononline",
-      "OffscreenCanvas",
-      "onpointerleave",
-      "onpointerenter",
-      "onemptied",
-      "onmouseenter",
-      "onkeypress",
-      "onloadeddata",
-      "oninvalid",
-      "onmouseup",
-      "onvolumechange",
-      "onpointerout",
-      "onstorage",
-      "onpause",
-      "onkeyup",
-      "onabort",
-      "onanimationstart",
-      "onafterprint",
-      "onblur",
-      "ondurationchange",
-      "onwaiting",
-      "ondeviceorientation",
-      "oncanplaythrough",
-      "onclose",
-      "onbeforeunload",
-      "onanimationend",
-      "onmouseleave",
-      "oncancel",
-      "onseeked",
-      "onpointerover",
-      "ondragleave",
-      "ongotpointercapture",
-      "onloadedmetadata",
-      "onpageshow",
-      "onplay",
-      "onunhandledrejection",
-      "onbeforeprint",
-      "onstalled",
-      "oncontextmenu",
-      "onreset",
-      "onpointercancel",
-      "onsubmit",
-      "ondrag",
-      "onload",
-      "onlostpointercapture",
-      "onsuspend",
-      "ondragstart",
-      "onpagehide",
-      "onmessage",
-      "location",
-      "onoffline",
-      "onappinstalled",
-      "onrejectionhandled",
-      "onunload",
-      "onwheel",
-      "onended",
-      "onmousedown",
-      "onpointerup",
-      "onmouseover",
-      "onkeydown",
-      "onclick",
-      "onfocus",
-      "onscroll",
-      "onresize",
-      "onsearch",
-      "ontoggle",
-      "exports",
-      "oncanplay",
-      "onlanguagechange",
-      "onpointerdown",
-      "ondeviceorientationabsolute",
-      "ondragenter",
-      "onauxclick",
-      "onerror",
-      "onpointermove",
-      "onmousemove",
-      "ondevicemotion",
-      "ondrop",
-      "onhashchange",
-      "onanimationiteration",
-      "ondblclick",
-      "onratechange",
-      "ontransitionend",
-      "ondragend",
-      "onpopstate",
-      "onplaying",
-      "onchange",
-      "onselect",
-      "onbeforeinstallprompt",
-      "onmouseout",
-      "ontimeupdate",
-      "ondragover",
-      "oncuechange",
-      "onprogress",
-      "onloadstart",
-      "onseeking",
-      "oninput",
-      "onmessageerror",
-      "onmousewheel",
-      "document",
-      "window",
-      "navigator",
-      "localStorage",
-      "sessionStorage",
-      "fetch",
-      "Headers",
-      "Request",
-      "Response",
-      "URLSearchParams",
-      "FormData"
-    ]
+    }
   },
   "overrides": [
     {
@@ -283,11 +159,24 @@
       }
     },
     {
-      "include": ["**/app/api/**/*.ts"],
+      "include": ["**/app/api/**/*.ts", "**/server/**/*.ts"],
       "linter": {
         "rules": {
           "style": {
             "useDefaultParameterLast": "off"
+          },
+          "suspicious": {
+            "noExplicitAny": "warn"
+          }
+        }
+      }
+    },
+    {
+      "include": ["**/middleware.ts"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noExplicitAny": "warn"
           }
         }
       }

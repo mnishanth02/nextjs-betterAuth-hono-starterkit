@@ -141,9 +141,11 @@ export default function SignUp() {
               await signUp.email({
                 email,
                 password,
+                phone: "",
+                isAdmin: false,
                 name: `${firstName} ${lastName}`,
                 image: image ? await convertImageToBase64(image) : "",
-                callbackURL: "/admin",
+                callbackURL: "/",
                 fetchOptions: {
                   onResponse: () => {
                     setLoading(false);
@@ -155,7 +157,7 @@ export default function SignUp() {
                     toast.error(ctx.error.message);
                   },
                   onSuccess: async () => {
-                    router.push("/admin");
+                    router.push("/");
                   },
                 },
               });
