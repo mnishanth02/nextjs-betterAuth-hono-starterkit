@@ -63,7 +63,6 @@
   }
 }
 
-
 @keyframes shimmer {
   0% {
     background-position: -200% 0;
@@ -84,7 +83,6 @@
     background-position: 0% 50%;
   }
 }
-
 
 :root {
   --radius: 0.625rem;
