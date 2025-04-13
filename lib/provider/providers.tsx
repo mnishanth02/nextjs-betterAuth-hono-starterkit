@@ -6,6 +6,7 @@ import NextTopLoader from "nextjs-toploader";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import type { ReactNode } from "react";
 import { ModalProvider } from "./modal-provider";
+import QueryProvider from "./query-provider";
 import { ThemeProvider } from "./theme-provider";
 
 export function Providers({ children }: { children: ReactNode }) {
@@ -18,7 +19,9 @@ export function Providers({ children }: { children: ReactNode }) {
       />
       <TooltipProvider>
         <ModalProvider />
-        <NuqsAdapter>{children}</NuqsAdapter>
+        <NuqsAdapter>
+          <QueryProvider>{children}</QueryProvider>
+        </NuqsAdapter>
       </TooltipProvider>
       <Toaster
         position="bottom-right"
