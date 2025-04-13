@@ -1,18 +1,34 @@
-import { buttonVariants } from "@ui/button";
-import Link from "next/link";
+import { TodoForm, TodoList } from "@/components/Todo";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Suspense } from "react";
 
-export default function Home() {
+export default async function Home() {
   return (
-    <div className=" min-h-screen flex-center flex-col">
-      <h1 className="font-bold text-4xl">Starter Kit</h1>
-      <p className="text-muted-foreground">
-        This is a starter kit for your next project. It is a simple project that is built with
-        Next.js with integrated Hono as a backend, Tailwind CSS, and TypeScript.
-      </p>
-      <p className="text-muted-foreground">Better-auth is integrated for authentication.</p>
-      <Link href="/auth/sign-in" className={buttonVariants({ variant: "default" })}>
-        Login
-      </Link>
+    <div className="container mx-auto max-w-2xl px-4 py-10">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-center text-2xl">Todo List</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <TodoForm />
+          <Suspense fallback={<TodoListSkeleton />}>
+            <TodoList />
+          </Suspense>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+function TodoListSkeleton() {
+  return (
+    <div className="space-y-2">
+      {Array(3)
+        .fill(0)
+        .map((_, i) => (
+          <Skeleton key={i} className="h-14 w-full" />
+        ))}
     </div>
   );
 }
