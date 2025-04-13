@@ -1,3 +1,4 @@
+import { ApiStatusCode } from "@/types/api";
 import type { Context } from "@/types/server";
 import { eq } from "drizzle-orm";
 import { db } from "../db";
@@ -9,8 +10,11 @@ import { users } from "../db/schema";
  * @access Private
  */
 export const getUsers = async (c: Context) => {
-  const users = await db.query.users.findMany();
-  return c.json(users);
+  const allUsers = await db.query.users.findMany();
+  return c.json({
+    success: true,
+    data: allUsers,
+  });
 };
 
 /**
@@ -32,11 +36,14 @@ export const getUserById = async (c: Context) => {
         message: "User not found",
         error: "No user found with the provided ID",
       },
-      404
+      ApiStatusCode.NOT_FOUND
     );
   }
 
-  return c.json(user);
+  return c.json({
+    success: true,
+    data: user,
+  });
 };
 
 /**
@@ -53,8 +60,9 @@ export const editProfile = async (c: Context) => {
       {
         success: false,
         message: "User not found",
+        error: "User authentication required",
       },
-      404
+      ApiStatusCode.NOT_FOUND
     );
   }
 
@@ -72,8 +80,9 @@ export const editProfile = async (c: Context) => {
       {
         success: false,
         message: "No fields to update",
+        error: "At least one field must be provided for update",
       },
-      400
+      ApiStatusCode.BAD_REQUEST
     );
   }
 
@@ -100,8 +109,9 @@ export const getProfile = async (c: Context) => {
       {
         success: false,
         message: "User not found",
+        error: "User authentication required",
       },
-      404
+      ApiStatusCode.NOT_FOUND
     );
   }
 
@@ -116,9 +126,12 @@ export const getProfile = async (c: Context) => {
         message: "Profile not found",
         error: "No profile found for the user",
       },
-      404
+      ApiStatusCode.NOT_FOUND
     );
   }
 
-  return c.json(profile);
+  return c.json({
+    success: true,
+    data: profile,
+  });
 };

@@ -9,7 +9,7 @@ import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 
 type Props<S> = {
-  fieldTitle: string;
+  fieldTitle?: string;
   nameInSchema: keyof S & string;
   className?: string;
 } & InputHTMLAttributes<HTMLInputElement>;
@@ -32,11 +32,12 @@ export function InputWithLabel<S>({
       control={form.control}
       name={nameInSchema}
       render={({ field }) => (
-        <FormItem>
-          <FormLabel className="" htmlFor={nameInSchema}>
-            {fieldTitle}
-          </FormLabel>
-
+        <FormItem className="flex-1">
+          {fieldTitle && (
+            <FormLabel className="" htmlFor={nameInSchema}>
+              {fieldTitle}
+            </FormLabel>
+          )}
           <FormControl>
             <div className="relative">
               <Input

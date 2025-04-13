@@ -1,5 +1,5 @@
+import type { auth } from "@/server/auth";
 import type { Context as HonoContext } from "hono";
-import type { auth } from "./auth";
 
 export interface Env {
   DATABASE_URL: string;
