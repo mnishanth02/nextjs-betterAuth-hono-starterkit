@@ -1,9 +1,9 @@
 "use client";
 
 import { Skeleton } from "@/components/ui/skeleton";
-import { useGetTodos } from "@/lib/api/todos";
+import { useGetTodos } from "@/features/todo/api/todos";
 import { memo } from "react";
-import { TodoItem } from "./TodoItem";
+import { TodoItem } from "./todo-item";
 
 export const TodoList = memo(function TodoList() {
   const { data: todos, isLoading, error } = useGetTodos();

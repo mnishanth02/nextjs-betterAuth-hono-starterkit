@@ -1,5 +1,6 @@
-import { TodoForm, TodoList } from "@/components/Todo";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { TodoList } from "@/features/todo/components";
+import { TodoForm } from "@/features/todo/components/todo-form";
 
 export default async function Home() {
   return (
