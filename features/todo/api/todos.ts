@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { z } from "zod";
 
 import { client } from "@/lib/hono-client";
+import type { ApiSuccessResponse } from "@/types/api";
 import type { CreateTodoInput, Todo, UpdateTodoInput } from "@/types/todo";
 
 // Response type from API differs from our internal Todo type (Date vs string)
@@ -20,21 +20,33 @@ interface TodoPatchRequest {
   json: UpdateTodoInput;
 }
 
-// Zod schema for validating API responses
-const todoResponseSchema = z.object({
-  id: z.string(),
-  title: z.string(),
-  completed: z.boolean(),
-  createdAt: z.string(),
-  updatedAt: z.string(),
-});
+/**
+ * Extract error message from API response
+ */
+const extractErrorMessage = (errorData: unknown, fallbackMessage: string): string => {
+  if (!errorData) return fallbackMessage;
 
-const todoArrayResponseSchema = z.array(todoResponseSchema);
+  // Handle our API error format
+  if (typeof errorData === "object" && errorData !== null) {
+    if ("error" in errorData && typeof errorData.error === "string") return errorData.error;
+    if ("message" in errorData && typeof errorData.message === "string") return errorData.message;
+  }
 
-const errorResponseSchema = z.object({
-  success: z.boolean().optional(),
-  message: z.string().optional(),
-});
+  return fallbackMessage;
+};
+
+/**
+ * Standardized API error handler
+ */
+const handleApiError = (error: unknown, fallbackMessage: string): never => {
+  console.error(fallbackMessage, error);
+
+  if (error instanceof Error) {
+    throw error;
+  }
+
+  throw new Error(fallbackMessage);
+};
 
 // Convert API response to our Todo type
 const mapToTodo = (response: TodoResponse): Todo => ({
@@ -50,20 +62,6 @@ const todoKeys = {
 };
 
 /**
- * Helper function to extract error message from API response
- */
-const extractErrorMessage = (errorData: unknown, defaultMessage: string): string => {
-  if (!errorData) return defaultMessage;
-
-  const result = errorResponseSchema.safeParse(errorData);
-  if (result.success && result.data.message) {
-    return result.data.message;
-  }
-
-  return defaultMessage;
-};
-
-/**
  * Hook to fetch all todos
  * @returns Query result with todos data, loading and error states
  */
@@ -75,20 +73,17 @@ export const useGetTodos = () => {
         const response = await client.api.todos.$get();
 
         if (!response.ok) {
-          throw new Error(`Failed to fetch todos: ${response.status}`);
+          const errorData = await response.json().catch(() => null);
+          const errorMessage = extractErrorMessage(
+            errorData,
+            `Failed to fetch todos: ${response.status}`
+          );
+          throw new Error(errorMessage);
         }
 
-        const result = await response.json();
-        // Validate the response against our schema
-        return todoArrayResponseSchema.parse(result);
+        return await response.json();
       } catch (error) {
-        if (error instanceof z.ZodError) {
-          console.error("Response validation error:", error.format());
-          throw new Error("Invalid response format from server");
-        }
-        const errorMessage = error instanceof Error ? error.message : "Unknown error";
-        toast.error(`Error fetching todos: ${errorMessage}`);
-        throw error;
+        return handleApiError(error, "Error fetching todos");
       }
     },
     select: (data) => data.map(mapToTodo),
@@ -117,20 +112,17 @@ export const useGetTodoById = (id?: string) => {
         });
 
         if (!response.ok) {
-          throw new Error(`Failed to fetch todo: ${response.status}`);
+          const errorData = await response.json().catch(() => null);
+          const errorMessage = extractErrorMessage(
+            errorData,
+            `Failed to fetch todo: ${response.status}`
+          );
+          throw new Error(errorMessage);
         }
 
-        const result = await response.json();
-        // Validate the response against our schema
-        return todoResponseSchema.parse(result);
+        return await response.json();
       } catch (error) {
-        if (error instanceof z.ZodError) {
-          console.error("Response validation error:", error.format());
-          throw new Error("Invalid response format from server");
-        }
-        const errorMessage = error instanceof Error ? error.message : "Unknown error";
-        toast.error(`Error fetching todo: ${errorMessage}`);
-        throw error;
+        return handleApiError(error, "Error fetching todo");
       }
     },
     select: (data) => mapToTodo(data),
@@ -163,18 +155,10 @@ export const useCreateTodo = () => {
           throw new Error(errorMessage);
         }
 
-        const result = await response.json();
-        // Validate the response against our schema
-        const validatedResponse = todoResponseSchema.parse(result);
-        return mapToTodo(validatedResponse);
+        const res = await response.json();
+        return mapToTodo(res);
       } catch (error) {
-        if (error instanceof z.ZodError) {
-          console.error("Response validation error:", error.format());
-          throw new Error("Invalid response format from server");
-        }
-        const errorMessage = error instanceof Error ? error.message : "Unknown error";
-        toast.error(`Error creating todo: ${errorMessage}`);
-        throw error;
+        return handleApiError(error, "Error creating todo");
       }
     },
     onSuccess: () => {
@@ -229,18 +213,10 @@ export const useUpdateTodo = (id?: string) => {
           throw new Error(errorMessage);
         }
 
-        const result = await response.json();
-        // Validate the response against our schema
-        const validatedResponse = todoResponseSchema.parse(result);
-        return mapToTodo(validatedResponse);
+        const res = await response.json();
+        return mapToTodo(res.data);
       } catch (error) {
-        if (error instanceof z.ZodError) {
-          console.error("Response validation error:", error.format());
-          throw new Error("Invalid response format from server");
-        }
-        const errorMessage = error instanceof Error ? error.message : "Unknown error";
-        toast.error(`Error updating todo: ${errorMessage}`);
-        throw error;
+        return handleApiError(error, "Error updating todo");
       }
     },
     onSuccess: () => {
@@ -267,13 +243,7 @@ export const useUpdateTodo = (id?: string) => {
 export const useDeleteTodo = (id?: string) => {
   const queryClient = useQueryClient();
 
-  // Schema for delete response
-  const deleteResponseSchema = z.object({
-    success: z.boolean().optional(),
-    message: z.string().optional(),
-  });
-
-  type DeleteResponseType = z.infer<typeof deleteResponseSchema>;
+  type DeleteResponseType = ApiSuccessResponse<{ id: string }>;
 
   const mutation = useMutation<DeleteResponseType, Error>({
     mutationFn: async () => {
@@ -295,17 +265,9 @@ export const useDeleteTodo = (id?: string) => {
           throw new Error(errorMessage);
         }
 
-        const result = await response.json();
-        // Validate the response against our schema
-        return deleteResponseSchema.parse(result);
+        return await response.json();
       } catch (error) {
-        if (error instanceof z.ZodError) {
-          console.error("Response validation error:", error.format());
-          throw new Error("Invalid response format from server");
-        }
-        const errorMessage = error instanceof Error ? error.message : "Unknown error";
-        toast.error(`Error deleting todo: ${errorMessage}`);
-        throw error;
+        return handleApiError(error, "Error deleting todo");
       }
     },
     onSuccess: () => {

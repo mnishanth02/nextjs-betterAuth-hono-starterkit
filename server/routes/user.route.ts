@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { editProfile, getProfile, getUserById, getUsers } from "../controllers/user.controller";
-import { isAdmin, protect } from "../middleware";
+import { isAdmin, protect } from "../middleware/auth.middleware";
 
 // Create a new router instance
 const userRouter = new Hono()

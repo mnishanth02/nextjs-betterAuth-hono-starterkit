@@ -1,3 +1,4 @@
+import { ApiStatusCode } from "@/types/api";
 import type { CreateTodoInput, Todo, UpdateTodoInput } from "@/types/todo";
 import type { Context } from "hono";
 
@@ -39,7 +40,14 @@ export const getTodoById = async (c: Context) => {
   const todo = todos.find((t) => t.id === id);
 
   if (!todo) {
-    return c.json({ message: "Todo not found" }, 404);
+    return c.json(
+      {
+        success: false,
+        message: "Todo not found",
+        error: "No todo found with the provided ID",
+      },
+      ApiStatusCode.NOT_FOUND
+    );
   }
 
   return c.json(todo);
@@ -62,7 +70,7 @@ export const createTodo = async (c: Context) => {
   };
 
   todos.push(newTodo);
-  return c.json(newTodo, 201);
+  return c.json(newTodo, ApiStatusCode.CREATED);
 };
 
 /**
@@ -77,7 +85,14 @@ export const updateTodo = async (c: Context) => {
   const todoIndex = todos.findIndex((t) => t.id === id);
 
   if (todoIndex === -1) {
-    return c.json({ message: "Todo not found" }, 404);
+    return c.json(
+      {
+        success: false,
+        message: "Todo not found",
+        error: "No todo found with the provided ID",
+      },
+      ApiStatusCode.NOT_FOUND
+    );
   }
 
   const currentTodo = todos[todoIndex] as Todo;
@@ -92,7 +107,11 @@ export const updateTodo = async (c: Context) => {
 
   todos[todoIndex] = updatedTodo;
 
-  return c.json(updatedTodo);
+  return c.json({
+    success: true,
+    message: "Todo updated successfully",
+    data: updatedTodo,
+  });
 };
 
 /**
@@ -102,14 +121,26 @@ export const updateTodo = async (c: Context) => {
  */
 export const deleteTodo = async (c: Context) => {
   const id = c.req.param("id");
-  const todoIndex = todos.findIndex((t) => t.id === id);
+  // Use find instead of findIndex to get the actual todo
+  const todoToDelete = todos.find((t) => t.id === id);
 
-  if (todoIndex === -1) {
-    return c.json({ message: "Todo not found" }, 404);
+  if (!todoToDelete) {
+    return c.json(
+      {
+        success: false,
+        message: "Todo not found",
+        error: "No todo found with the provided ID",
+      },
+      ApiStatusCode.NOT_FOUND
+    );
   }
 
-  const deletedTodo = todos[todoIndex];
+  // Remove the todo from the array
   todos = todos.filter((t) => t.id !== id);
 
-  return c.json(deletedTodo);
+  return c.json({
+    success: true,
+    message: "Todo deleted successfully",
+    data: { id: todoToDelete.id },
+  });
 };
