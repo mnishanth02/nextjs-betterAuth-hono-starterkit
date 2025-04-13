@@ -2,9 +2,10 @@
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetTodos } from "@/lib/api/todos";
+import { memo } from "react";
 import { TodoItem } from "./TodoItem";
 
-export function TodoList() {
+export const TodoList = memo(function TodoList() {
   const { data: todos, isLoading, error } = useGetTodos();
 
   if (isLoading) {
@@ -45,4 +46,4 @@ export function TodoList() {
       ))}
     </div>
   );
-}
+});

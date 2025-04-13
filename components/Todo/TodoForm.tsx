@@ -1,46 +1,40 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import { useCreateTodo } from "@/lib/api/todos";
-import { useState } from "react";
-import { toast } from "sonner";
+import { type CreateTodoFormData, createTodoSchema } from "@/lib/validations/todo";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { InputWithLabel } from "../custom/input-with-label";
 
 export function TodoForm() {
-  const [title, setTitle] = useState("");
-  const createTodo = useCreateTodo();
+  const { mutateAsync, isPending } = useCreateTodo();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const form = useForm<CreateTodoFormData>({
+    resolver: zodResolver(createTodoSchema),
+    defaultValues: {
+      title: "",
+    },
+  });
 
-    if (!title.trim()) {
-      toast.error("Todo title cannot be empty");
-      return;
-    }
-
-    createTodo.mutate(
-      { title },
-      {
-        onSuccess: () => {
-          setTitle("");
-          // Toast is now handled in the API hook
-        },
-      }
-    );
+  const onSubmit = async (values: CreateTodoFormData) => {
+    await mutateAsync(values);
+    form.reset();
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mb-6 flex gap-2">
-      <Input
-        type="text"
-        placeholder="Add a new todo..."
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        disabled={createTodo.isPending}
-      />
-      <Button type="submit" disabled={createTodo.isPending || !title.trim()}>
-        Add
-      </Button>
-    </form>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="mb-6 flex gap-2">
+        <InputWithLabel
+          nameInSchema="title"
+          placeholder="Add a new todo..."
+          disabled={form.formState.isSubmitting || isPending}
+        />
+        <Button type="submit" disabled={form.formState.isSubmitting || isPending}>
+          Add
+        </Button>
+      </form>
+    </Form>
   );
 }
