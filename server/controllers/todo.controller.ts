@@ -1,5 +1,5 @@
+import type { CreateTodoInput, Todo, UpdateTodoInput } from "@/features/todo/todo-types";
 import { ApiStatusCode } from "@/types/api";
-import type { CreateTodoInput, Todo, UpdateTodoInput } from "@/types/todo";
 import type { Context } from "hono";
 
 // In-memory todos for demonstration

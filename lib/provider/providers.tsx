@@ -9,7 +9,11 @@ import { ModalProvider } from "./modal-provider";
 import QueryProvider from "./query-provider";
 import { ThemeProvider } from "./theme-provider";
 
-export function Providers({ children }: { children: ReactNode }) {
+type ProvidersProps = {
+  children: ReactNode;
+};
+
+export function Providers({ children }: ProvidersProps) {
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
       <NextTopLoader
