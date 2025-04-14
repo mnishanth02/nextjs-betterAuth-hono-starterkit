@@ -3,23 +3,11 @@
 import {
   type DehydratedState,
   HydrationBoundary,
-  QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import React from "react";
-
-// Create a client
-const defaultQueryClientOptions = {
-  defaultOptions: {
-    queries: {
-      staleTime: 60 * 1000, // 1 minute
-      gcTime: 5 * 60 * 1000, // 5 minutes
-      retry: 1,
-      refetchOnWindowFocus: false,
-    },
-  },
-};
+import type React from "react";
+import { getQueryClient } from "../utils/get-query-client";
 
 export default function QueryProvider({
   children,
@@ -28,9 +16,7 @@ export default function QueryProvider({
   children: React.ReactNode;
   dehydratedState?: DehydratedState;
 }) {
-  // Create a new QueryClient instance for each request in SSR mode
-  // This prevents data leakage between requests
-  const [queryClient] = React.useState(() => new QueryClient(defaultQueryClientOptions));
+  const queryClient = getQueryClient();
 
   return (
     <QueryClientProvider client={queryClient}>

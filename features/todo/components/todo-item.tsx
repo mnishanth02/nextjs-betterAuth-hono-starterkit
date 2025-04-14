@@ -7,12 +7,12 @@ import { Input } from "@/components/ui/input";
 import { useDeleteTodo, useUpdateTodo } from "@/features/todo/api/todos";
 import { cn } from "@/lib/utils";
 import { type UpdateTodoFormData, updateTodoSchema } from "@/lib/validations/todo";
-import type { Todo } from "@/types/todo";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Trash } from "lucide-react";
 import { memo, startTransition, useCallback, useEffect, useRef, useState } from "react";
 import { useOptimistic, useTransition } from "react";
 import { useForm } from "react-hook-form";
+import type { Todo } from "../todo-types";
 
 interface TodoItemProps {
   todo: Todo;
