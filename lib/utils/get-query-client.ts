@@ -1,5 +1,6 @@
 import { isServer } from "@tanstack/react-query";
-import { QueryClient } from "@tanstack/react-query";
+import { QueryCache, QueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 function makeQueryClient() {
   return new QueryClient({
@@ -11,6 +12,15 @@ function makeQueryClient() {
         refetchOnWindowFocus: false,
       },
     },
+    queryCache: new QueryCache({
+      onError: (error) => {
+        // Global error handling
+        console.error("Query error:", error);
+        toast.error(
+          `An error occurred: ${error instanceof Error ? error.message : "Unknown error"}`
+        );
+      },
+    }),
   });
 }
 

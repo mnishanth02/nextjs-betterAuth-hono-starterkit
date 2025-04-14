@@ -19,7 +19,10 @@ export const mapToTodo = (response: TodoResponse): Todo => ({
 // Query keys for todos - for consistent cache management
 export const todoKeys = {
   all: ["todos"] as const,
-  detail: (id: string) => ["todos", { id }] as const,
+  lists: () => [...todoKeys.all, "list"] as const,
+  list: (filters: string) => [...todoKeys.lists(), { filters }] as const,
+  details: () => [...todoKeys.all, "detail"] as const,
+  detail: (id: string) => [...todoKeys.details(), id] as const,
 };
 
 /**
