@@ -18,6 +18,18 @@ export default async function Home() {
     <div className="container mx-auto max-w-2xl px-4 py-10">
       <Card>
         <CardHeader>
+          <CardTitle className="text-center text-2xl">Starter Kit</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p>
+            This is a starter kit for a todo list app built with Next.js, Shadcn, and Tanstack Query
+            nad Honojs.
+          </p>
+          <p>Drizzle orm for database, and Honojs for api.</p>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
           <CardTitle className="text-center text-2xl">Todo List</CardTitle>
         </CardHeader>
         <CardContent>
