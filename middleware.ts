@@ -15,5 +15,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin, "], // Apply middleware to specific routes
+  matcher: ["/admin"], // Apply middleware to specific routes
 };

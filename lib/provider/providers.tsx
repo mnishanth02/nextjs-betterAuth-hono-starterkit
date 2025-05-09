@@ -1,6 +1,7 @@
 "use client";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { TRPCReactProvider } from "@/trpc/client";
 import { Toaster } from "@ui/sonner";
 import NextTopLoader from "nextjs-toploader";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
@@ -18,7 +19,9 @@ export function Providers({ children }: { children: ReactNode }) {
       />
       <TooltipProvider>
         <ModalProvider />
-        <NuqsAdapter>{children}</NuqsAdapter>
+        <NuqsAdapter>
+          <TRPCReactProvider>{children}</TRPCReactProvider>
+        </NuqsAdapter>
       </TooltipProvider>
       <Toaster
         position="bottom-right"
